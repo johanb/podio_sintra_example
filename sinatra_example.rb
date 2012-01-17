@@ -26,7 +26,7 @@ end
 
 # access this to request a token from Podio.
 get '/auth/podio' do
-  url = podio_client.web_server.authorize_url(:redirect_uri => redirect_uri)
+  url = podio_client.auth_code.authorize_url(:redirect_uri => redirect_uri)
   puts "Redirecting to URL: #{url.inspect}"
   redirect url
 end
@@ -35,7 +35,7 @@ end
 # and makes a successful api call.
 get '/auth/podio/callback' do
   begin
-    access_token = podio_client.web_server.get_access_token(params[:code], :redirect_uri => redirect_uri)
+    access_token = podio_client.auth_code.get_token(params[:code], :redirect_uri => redirect_uri)
     "<p>Your OAuth access token: #{access_token.token}</p>"
   rescue OAuth2::HTTPError
     %(<p>Outdated ?code=#{params[:code]}:</p><p>#{$!}</p><p><a href="/auth/podio">Retry</a></p>)
